@@ -1,1 +1,1 @@
-# Mesoscopic_Modeling_and_Parameter_Estimation_for_SNNs
+# Mesoscopic Modeling and Parameter Estimation for SNNs
