@@ -15,27 +15,31 @@ import matplotlib.pyplot as plt
 
 def meso_model(dt = 0.5, # resolution time interval
                dt_rec = 1.0, # record time interval
-               t_end = 2000.0, # simulation time
+               t_end = 60000.0, # simulation time
                N = np.array([400, 200, 400]), # population size
                pops_prop = np.array([1, -1, 1]), # pop property, 1: excitatory, -1: inhibitory
                t_ref = 4.0 * np.ones(3), # absolute refractory period
                tau_m = 20 * np.ones(3),  # membrane time constant
-               mu = 36.0 * np.ones(3),  # constant base current mu=R*(I0+Vrest)
+               mu = 36.0 * np.ones(3),  # constant base current mu=R*(I0+Vrest), R*I0 is contant inputs
                c = 10.0 * np.ones(3),  # base rate of exponential link function
                Delta_u = 2.5 * np.ones(3),  # softness of exponential link function
                V_reset = 0.0 * np.ones(3),  # Reset potential
                V_th = 15.0 * np.ones(3),  # baseline threshold (non-accumulating part)
-               tau_sfa_exc = [100.0, 1000.0],  # adaptation time constants of excitatory neurons
-               tau_sfa_inh = [100.0, 1000.0],  # adaptation time constants of inhibitory neurons
-               J_sfa_exc = [1000.0, 1000.0],  # size of feedback kernel theta (= area under exponential) in mV*ms
-               J_sfa_inh = [1000.0, 1000.0],  # in mV*ms
-               tau_theta = np.array([tau_sfa_exc, tau_sfa_inh]),
-               J_theta = np.array([J_sfa_exc, J_sfa_inh]),
-               
+               tau_theta = np.array([[1000.0], [1000.0], [1000.0]]), #adaptation time constants, in ms
+               J_theta = np.array([[100.0], [100.0], [100.0]]), # adaptation stregth, in mV*ms
                pconn = np.array([[1, 1, 0],
                                 [1, 1, 1],
-                                [0, 1, 1]]), # connectivity matrix
-               
+                                [0, 1, 1]]), # connectivity matrix, probability of connections
+               delay = 1.0 * np.ones((3, 3)), # every two populations have a delay constant
+               J_syn = np.array([[ 0.096, -0.384, 0.0], 
+                                [0.096, -0.384, 0.096], 
+                                [0.0, -0.384, 0.096]]), # synaptic weight matrix, positive: excitatory, negative: inhibitory
+               step = [[20.] for i in range(3)],  # external inputs, jump size of mu in mV
+               tstep = np.array(np.array([[30000.] for i in range(3)])),  # times of jumps of external inputs
+               tau_ex = 3.0,  # synaptic time constants of excitatory connections, in ms
+               tau_in = 6.0,  # synaptic time constants of inhibitory connections, in ms
+               adapt = True, # if using adaptaion of thresholds, usually True
+               seed = 1, # random seed
                ):
     M = len(N)
     
